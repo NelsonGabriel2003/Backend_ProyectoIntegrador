@@ -23,7 +23,7 @@ public class ConfigSec {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/luluncoto/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() 
             );
 
         return http.build();
