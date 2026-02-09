@@ -1,12 +1,16 @@
 package com.puce.luluncotoapp.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +19,7 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name="Users")
+@Table(name="users")
 public class UserModel {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -54,7 +58,19 @@ public class UserModel {
 	
 	@Column(length=500,nullable=true)
 	private String fotoPerfil;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "rol_id")
+	private RolModel rol;
+
+	@Column(updatable = false)
+	private LocalDateTime creadoEn;
+
+	@PrePersist
+	protected void alCrear() {
+		this.creadoEn = LocalDateTime.now();
+	}
+
 	public UserModel() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -67,7 +83,9 @@ public class UserModel {
 			@Size(min = 10, max = 10, message = "La cedula solo debe contener 10 caracteres") @NotBlank(message = "La cedula es obligatorio") String cedula,
 			@Size(min = 10, max = 10, message = "El celular debe tener 10 digitos") @NotBlank(message = "El celular es obligatorio") String celular,
 			@NotNull(message = "Debemos comprobar tu edad con la fecha de nacimiento") @Past(message = "La fecha de nacimiento debe ser una fecha pasada") LocalDate fechadeNacimiento,
-			String fotoPerfil) {
+			String fotoPerfil,
+			RolModel rol,
+			LocalDateTime creadoEn) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -77,6 +95,8 @@ public class UserModel {
 		this.celular = celular;
 		this.fechadeNacimiento = fechadeNacimiento;
 		this.fotoPerfil = fotoPerfil;
+		this.rol = rol;
+		this.creadoEn = creadoEn;
 	}
 
 	public Long getId() {
@@ -127,7 +147,8 @@ public class UserModel {
 	public void setFotoPerfil(String fotoPerfil) {
 		this.fotoPerfil = fotoPerfil;
 	}
-	
-	
-	
+	public RolModel getRol() { return rol; }
+	public void setRol(RolModel rol) { this.rol = rol; }
+	public LocalDateTime getCreadoEn() { return creadoEn; }
+	public void setCreadoEn(LocalDateTime creadoEn) { this.creadoEn = creadoEn; }
 }
